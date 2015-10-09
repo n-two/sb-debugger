@@ -213,7 +213,7 @@ namespace DebuggerClient
         private static void AddToOwnBoard(ref Board b, string id, int pow, int dur)
         {
             Card c = new Card();
-            c.InitInstance(CardTemplate.LoadFromId(id), true, b.GetNextId());
+            c = Card.Create(id, true, b.GetNextId());
             c.CurrentAtk = pow;
             c.CurrentDurability = dur;
             b.MinionFriend.Add(c);
@@ -222,7 +222,7 @@ namespace DebuggerClient
         private static void AddToOppBoard(ref Board b, string id, int pow, int dur) 
         {
             Card c = new Card();
-            c.InitInstance(CardTemplate.LoadFromId(id), false, b.GetNextId());
+            c = Card.Create(id, false, b.GetNextId());
             c.CurrentAtk = pow;
             c.CurrentDurability = dur;
             b.MinionEnemy.Add(c);     
