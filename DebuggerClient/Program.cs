@@ -43,16 +43,22 @@ namespace DebuggerClient
 
             SetUpHero(ref _board, _board.FriendClass);
             SetUpHero(ref _board, _board.EnemyClass, ENEMY, JUSTICAR);
+            _board.HeroFriend.CurrentHealth = 30;
+            _board.HeroFriend.CurrentArmor = 0;
+            _board.HeroEnemy.CurrentHealth = 30;
+            _board.HeroEnemy.CurrentArmor = 0;
             SetUpWeapons(ref _board, "EX1_536", 3, 2, true);
             SetUpSeed(ref _board);
+
+
             Console.WriteLine("Pipe connected : " + PipeClient.IsConnected());
 
             string SeedStr = _board.ToSeed();
-            string ProfileStr = "Default";
-            bool AoESpells = true;
+            string ProfileStr = "Default"; // NOTE: make sure your profiles don't have weird characters in their names
+            bool AutoConcede = false;
 
 
-            SendSeedRequest(SeedStr, ProfileStr, AoESpells);
+            SendSeedRequest(SeedStr, ProfileStr, AutoConcede);
 
             Console.ReadLine();
 
@@ -88,27 +94,77 @@ namespace DebuggerClient
                     }
                     break;
                 case Card.CClass.MAGE:
-                     c.InitInstance(CardTemplate.LoadFromId("HERO_08"), true, b.GetNextId());
+                     c = Card.Create("HERO_08", isFriend, b.GetNextId());
                      if (j)
                      {
-                         a = Card.Create("AT_132_MAGE", true, b.GetNextId());
+                         a = Card.Create("AT_132_MAGE", isFriend, b.GetNextId());
                      }
                      else
                      {
-                         a = Card.Create("CS2_034", true, b.GetNextId());
+                         a = Card.Create("CS2_034", isFriend, b.GetNextId());
                      }
                      break;
                 case Card.CClass.PALADIN:
+                    c = Card.Create("HERO_04", isFriend, b.GetNextId());
+                    if (j)
+                    {
+
+                    }
+                    else
+                    {
+
+                    }
                      break;
                 case Card.CClass.PRIEST:
+                    c = Card.Create("HERO_09", isFriend, b.GetNextId());
+                    if (j)
+                    {
+
+                    } else
+                    {
+
+                    }
                      break;
                 case Card.CClass.ROGUE:
+                    c = Card.Create("HERO_03", isFriend, b.GetNextId());
+                    if (j)
+                    {
+
+                    } else
+                    {
+
+                    }
                      break;
                 case Card.CClass.SHAMAN:
+                    c = Card.Create("HERO_02", isFriend, b.GetNextId());
+                    if (j)
+                    {
+
+                    } else
+                    {
+                        a = Card.Create("CS2_049", isFriend, b.GetNextId());
+                    }
                      break;
                 case Card.CClass.WARLOCK:
+                    c = Card.Create("HERO_07", isFriend, b.GetNextId());
+                    if (j)
+                    {
+
+                    }
+                    else
+                    {
+
+                    }
                      break;
                 case Card.CClass.WARRIOR:
+                    c = Card.Create("HERO_01", isFriend, b.GetNextId());
+                    if (j)
+                    {
+
+                    } else
+                    {
+
+                    }
                      break;
             }
             if (!isFriend)
@@ -123,7 +179,7 @@ namespace DebuggerClient
             }
         }
 
-        private static void AddSecrect(ref Board b, string id) // TODO: it doesn't work atm.
+        private static void AddSecrect(ref Board b, string id)
         {
             b.Secret.Add(CardTemplate.StringToCard(id));
         } 
