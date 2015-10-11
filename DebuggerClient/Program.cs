@@ -8,6 +8,16 @@ namespace DebuggerClient
 {
     internal class Program
     {
+        static int _globalValue;
+
+        public static int GlobalCounter
+        {
+            get
+            {
+                return ++_globalValue;
+            }
+        }
+
         private static void SetUpSeed(ref Board _board)
         {
             
@@ -27,9 +37,10 @@ namespace DebuggerClient
             bool JUSTICAR = true;
             SetupEventHandlers();
             PipeClient.Connect();
-            
+
             // make a empty board from base seed;
-            Board _board = new Board();
+            Board _board = Board.FromSeed("10~5~37~0~0~20~19~2~True~7~True~8~EX1_536*0*0*3*3*0*2*37*2*0*0*2*0*False*False*False*False*False*False*False*False*False*False*False*False*False*0*False~0~HERO_06*0*0*0*0*0*30*37*30*0*0*30*0*False*False*False*False*False*False*False*False*False*False*False*False*False*0*False~HERO_06*0*0*0*0*0*30*37*30*0*0*30*0*False*False*False*False*False*False*False*False*False*False*False*False*False*0*False~CS2_017*0*0*0*2*0*0*37*0*0*0*0*0*False*False*False*False*False*False*False*False*False*False*False*False*False*0*False~AT_132_DRUID*0*0*0*2*0*0*37*0*0*0*0*0*False*False*False*False*False*False*False*False*False*False*False*False*False*0*False~0~0~0~0~0~0~0~0~True=True=False~0~0~0~False~AT_029,EX1_011,CS2_233,EX1_124,EX1_581,EX1_131,EX1_162,GVG_023,GVG_006,GVG_103,EX1_129,EX1_556,EX1_412,EX1_134,AT_100,GVG_091,AT_114,GVG_078,CS2_179,EX1_023,EX1_043,BRM_008,AT_090,AT_028,CS2_155,CS2_222,AT_103~");
+            // Board _board = new Board();
             _board.IsOwnTurn = true; // can't sim if it's not your turn
 
 
@@ -49,6 +60,10 @@ namespace DebuggerClient
             _board.HeroEnemy.CurrentArmor = 0;
             SetUpWeapons(ref _board, "EX1_536", 3, 2, true);
             SetUpSeed(ref _board);
+
+            Card test = Card.Create(CardTemplate.StringToCard("CS2_179"), true, GlobalCounter);
+
+            Console.WriteLine(test.Template.Name);
 
 
             Console.WriteLine("Pipe connected : " + PipeClient.IsConnected());
@@ -71,41 +86,41 @@ namespace DebuggerClient
             switch (hc)
             {
                 case Card.CClass.DRUID:
-                    c = Card.Create("HERO_06", isFriend, b.GetNextId());
+                    c = Card.Create("HERO_06", isFriend, GlobalCounter);
                     if (j)
                     {
-                        a = Card.Create("AT_132_DRUID", isFriend, b.GetNextId());
+                        a = Card.Create("AT_132_DRUID", isFriend, GlobalCounter);
                         
                     }
                     else
                     {
-                        a = Card.Create("CS2_017", isFriend, b.GetNextId());
+                        a = Card.Create("CS2_017", isFriend, GlobalCounter);
                     }
                     break;
                 case Card.CClass.HUNTER:
-                    c = Card.Create("HERO_05", isFriend, b.GetNextId());
+                    c = Card.Create("HERO_05", isFriend, GlobalCounter);
                     if (j)
                     {
-                        a = Card.Create("CS2_102", isFriend, b.GetNextId());
+                        a = Card.Create("CS2_102", isFriend, GlobalCounter);
                     }
                     else
                     {
-                        a = Card.Create("CS2_102", isFriend, b.GetNextId());
+                        a = Card.Create("CS2_102", isFriend, GlobalCounter);
                     }
                     break;
                 case Card.CClass.MAGE:
-                     c = Card.Create("HERO_08", isFriend, b.GetNextId());
+                     c = Card.Create("HERO_08", isFriend, GlobalCounter);
                      if (j)
                      {
-                         a = Card.Create("AT_132_MAGE", isFriend, b.GetNextId());
+                         a = Card.Create("AT_132_MAGE", isFriend, GlobalCounter);
                      }
                      else
                      {
-                         a = Card.Create("CS2_034", isFriend, b.GetNextId());
+                         a = Card.Create("CS2_034", isFriend, GlobalCounter);
                      }
                      break;
                 case Card.CClass.PALADIN:
-                    c = Card.Create("HERO_04", isFriend, b.GetNextId());
+                    c = Card.Create("HERO_04", isFriend, GlobalCounter);
                     if (j)
                     {
 
@@ -116,7 +131,7 @@ namespace DebuggerClient
                     }
                      break;
                 case Card.CClass.PRIEST:
-                    c = Card.Create("HERO_09", isFriend, b.GetNextId());
+                    c = Card.Create("HERO_09", isFriend, GlobalCounter);
                     if (j)
                     {
 
@@ -126,7 +141,7 @@ namespace DebuggerClient
                     }
                      break;
                 case Card.CClass.ROGUE:
-                    c = Card.Create("HERO_03", isFriend, b.GetNextId());
+                    c = Card.Create("HERO_03", isFriend, GlobalCounter);
                     if (j)
                     {
 
@@ -136,17 +151,17 @@ namespace DebuggerClient
                     }
                      break;
                 case Card.CClass.SHAMAN:
-                    c = Card.Create("HERO_02", isFriend, b.GetNextId());
+                    c = Card.Create("HERO_02", isFriend, GlobalCounter);
                     if (j)
                     {
 
                     } else
                     {
-                        a = Card.Create("CS2_049", isFriend, b.GetNextId());
+                        a = Card.Create("CS2_049", isFriend, GlobalCounter);
                     }
                      break;
                 case Card.CClass.WARLOCK:
-                    c = Card.Create("HERO_07", isFriend, b.GetNextId());
+                    c = Card.Create("HERO_07", isFriend, GlobalCounter);
                     if (j)
                     {
 
@@ -157,7 +172,7 @@ namespace DebuggerClient
                     }
                      break;
                 case Card.CClass.WARRIOR:
-                    c = Card.Create("HERO_01", isFriend, b.GetNextId());
+                    c = Card.Create("HERO_01", isFriend, GlobalCounter);
                     if (j)
                     {
 
@@ -188,14 +203,14 @@ namespace DebuggerClient
         {
             if (enemy)
             {
-                Card c = Card.Create(id, false, b.GetNextId());
+                Card c = Card.Create(id, false, GlobalCounter);
                 c.CurrentAtk = pow;
                 c.CurrentDurability = dur;
                 b.WeaponEnemy = c;
             }
             else 
             {
-                Card c = Card.Create(id, true, b.GetNextId());
+                Card c = Card.Create(id, true, GlobalCounter);
                 c.CurrentAtk = pow;
                 c.CurrentDurability = dur;
                 b.WeaponFriend = c;
@@ -205,7 +220,7 @@ namespace DebuggerClient
         private static void AddToHand(ref Board b, string id)
         {
             Card c = new Card();
-            c = Card.Create(id, true, b.GetNextId());
+            c = Card.Create(id, true, GlobalCounter);
             b.Hand.Add(c);
 
         }
@@ -213,7 +228,7 @@ namespace DebuggerClient
         private static void AddToOwnBoard(ref Board b, string id, int pow, int dur)
         {
             Card c = new Card();
-            c = Card.Create(id, true, b.GetNextId());
+            c = Card.Create(id, true, GlobalCounter);
             c.CurrentAtk = pow;
             c.CurrentDurability = dur;
             b.MinionFriend.Add(c);
@@ -222,7 +237,7 @@ namespace DebuggerClient
         private static void AddToOppBoard(ref Board b, string id, int pow, int dur) 
         {
             Card c = new Card();
-            c = Card.Create(id, false, b.GetNextId());
+            c = Card.Create(id, false, GlobalCounter);
             c.CurrentAtk = pow;
             c.CurrentDurability = dur;
             b.MinionEnemy.Add(c);     
