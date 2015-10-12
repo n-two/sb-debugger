@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using SmartBotAPI;
 using SmartBot.Database;
 using SmartBot.Plugins.API;
@@ -10,6 +11,24 @@ namespace DebuggerClient
     {
         static int _globalValue;
 
+        static Dictionary<string, string> _cardnames = new Dictionary<string, string>();
+        public static Dictionary<string, string> CardNames
+        {
+            get { return _cardnames; }
+            set { _cardnames = value; }
+        }
+        private static void MakeCardNames()
+        {
+            Dictionary<string, string> _dic = new Dictionary<string, string>();
+            foreach (Card.Cards _card in Enum.GetValues(typeof(Card.Cards)))
+            {
+                CardTemplate temp = CardTemplate.LoadFromId(_card);
+                if (temp == null) continue;
+                if (CardNames.ContainsKey(temp.Name)) continue; 
+                CardNames.Add(temp.Name, _card.ToString());
+            }
+        }
+
         public static int GlobalCounter
         {
             get
@@ -18,16 +37,22 @@ namespace DebuggerClient
             }
         }
 
+
         private static void SetUpSeed(ref Board _board)
         {
             
-            AddToHand(ref _board, "GVG_095");
-            AddToHand(ref _board, "GVG_096");
-            AddToHand(ref _board, "GVG_092");
+            AddToHand(ref _board, "Mysterious Challenger");
+            AddToHand(ref _board, "Quartermaster");
+            AddToHand(ref _board, "Shielded Minibot");
 
-            AddToOwnBoard(ref _board, "AT_079", 6, 6);
+            AddToOwnBoard(ref _board, "Knife Juggler", 6, 6);
 
-            AddToOppBoard(ref _board, "EX1_534", 6, 5);
+            AddToOppBoard(ref _board, "Piloted Shredder", 6, 5);
+
+            AddSecrect(ref _board, "Competitive Spirit");
+
+            SetUpWeapons(ref _board, "Coghammer", 3, 2, true);
+            
 
 
         }
@@ -35,6 +60,7 @@ namespace DebuggerClient
         {
             bool ENEMY = false; // isFriend is the bool, so enemy must be false.
             bool JUSTICAR = true;
+            MakeCardNames();
             SetupEventHandlers();
             PipeClient.Connect();
 
@@ -58,8 +84,8 @@ namespace DebuggerClient
             _board.HeroFriend.CurrentArmor = 0;
             _board.HeroEnemy.CurrentHealth = 30;
             _board.HeroEnemy.CurrentArmor = 0;
-            SetUpWeapons(ref _board, "EX1_536", 3, 2, true);
             SetUpSeed(ref _board);
+
 
             Card test = Card.Create(CardTemplate.StringToCard("CS2_179"), true, GlobalCounter);
 
@@ -194,13 +220,15 @@ namespace DebuggerClient
             }
         }
 
-        private static void AddSecrect(ref Board b, string id)
+        private static void AddSecrect(ref Board b, string name)
         {
+            string id = GetCardIdByName(name);
             b.Secret.Add(CardTemplate.StringToCard(id));
         } 
 
-        private static void SetUpWeapons(ref Board b, string id, int pow, int dur, bool enemy = false)
+        private static void SetUpWeapons(ref Board b, string name, int pow, int dur, bool enemy = false)
         {
+            string id = GetCardIdByName(name);
             if (enemy)
             {
                 Card c = Card.Create(id, false, GlobalCounter);
@@ -217,30 +245,46 @@ namespace DebuggerClient
             }
         }
 
-        private static void AddToHand(ref Board b, string id)
+        private static void AddToHand(ref Board b, string name)
         {
             Card c = new Card();
+            string id = GetCardIdByName(name);
             c = Card.Create(id, true, GlobalCounter);
             b.Hand.Add(c);
 
         }
 
-        private static void AddToOwnBoard(ref Board b, string id, int pow, int dur)
+        private static void AddToOwnBoard(ref Board b, string name, int pow, int dur)
         {
             Card c = new Card();
+            string id = GetCardIdByName(name);
             c = Card.Create(id, true, GlobalCounter);
             c.CurrentAtk = pow;
             c.CurrentDurability = dur;
             b.MinionFriend.Add(c);
         }
 
-        private static void AddToOppBoard(ref Board b, string id, int pow, int dur) 
+        private static void AddToOppBoard(ref Board b, string name, int pow, int dur) 
         {
             Card c = new Card();
+            string id = GetCardIdByName(name);
             c = Card.Create(id, false, GlobalCounter);
             c.CurrentAtk = pow;
             c.CurrentDurability = dur;
             b.MinionEnemy.Add(c);     
+        }
+
+        private static string GetCardIdByName(string name)
+        {
+            string id;
+            if(CardNames.TryGetValue(name, out id))
+            {
+                return id;
+            } else
+            {
+                Console.WriteLine("No Card with such name found, you probably misspelled it.");
+                return null; // throw err
+            }
         }
 
         private static void SetupEventHandlers()
@@ -266,7 +310,7 @@ namespace DebuggerClient
                     break;
 
                 case CommandHandler.CommandType.Log:
-                    Console.WriteLine("Log : " + string.Join(Environment.NewLine, args));
+               //     Console.WriteLine("Log : " + string.Join(Environment.NewLine, args));
                     break;
             }
         }
