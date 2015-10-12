@@ -260,7 +260,7 @@ namespace DebuggerClient
             string id = GetCardIdByName(name);
             c = Card.Create(id, true, GlobalCounter);
             c.CurrentAtk = pow;
-            c.CurrentDurability = dur;
+            c.CurrentHealth = dur;
             b.MinionFriend.Add(c);
         }
 
@@ -270,7 +270,7 @@ namespace DebuggerClient
             string id = GetCardIdByName(name);
             c = Card.Create(id, false, GlobalCounter);
             c.CurrentAtk = pow;
-            c.CurrentDurability = dur;
+            c.CurrentHealth = dur;
             b.MinionEnemy.Add(c);     
         }
 
